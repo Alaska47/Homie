@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,21 +86,32 @@ public class RecommendedPostsFragment extends Fragment {
 
         initializeAdapter();
         initializeData();
+        Log.wtf("Initialized", "hi");
 
         return v;
     }
 
-
+    /**
     @Override
     public void onResume() {
         super.onResume();
         initializeData();
     }
+    **/
 
     private void initializeAdapter() {
         adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
+    /**
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        rv.setAdapter(null);
+        adapter = null;
+        rv = null;
+    }
+    **/
 
     private void initializeData() {
         /**
@@ -107,6 +119,7 @@ public class RecommendedPostsFragment extends Fragment {
         storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic2), "John", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et nemo nimium beatus est; Dulce amarum, leve asperum, prope longe, stare movere, quadratum rotundum.", 412, 1000, 12, 3233));
         storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), getResources().getString(R.string.default_cv_name), getResources().getString(R.string.default_cv_description), 2123, 8000, 4500, 0));
          **/
+        storyCards.clear();
         BackendUtils.doGetRequest("/api/getHomeless", new HashMap<String, String>() {{
         }}, new VolleyCallback() {
             @Override
@@ -116,7 +129,10 @@ public class RecommendedPostsFragment extends Fragment {
                     JSONArray jArray = new JSONArray(result);
                     for (int i = 0; i < jArray.length(); i++){
                         JSONObject object = jArray.getJSONObject(i);
-                        StoryCard s = new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), object.getString("firstName"), object.getString("description"), object.getInt("goal"), object.getInt("moneyRaised"), object.getInt("numLikes"), object.getInt("score"));
+                        String encodedImage = object.getString("picture");
+                        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        StoryCard s = new StoryCard(decodedByte, object.getString("firstName"), object.getString("description"), object.getInt("moneyRaised"), object.getInt("goal"), object.getInt("numLikes"), object.getInt("score"));
                         Log.d("Name: ", object.getString("firstName"));
                         storyCards.add(s);
 
