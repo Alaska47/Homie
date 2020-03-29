@@ -1,18 +1,49 @@
 package com.example.homie.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.homie.R;
 import com.example.homie.activities.NewUpdateActivity;
+import com.example.homie.utils.BackendUtils;
+import com.example.homie.utils.StoryCard;
+import com.example.homie.utils.VolleyCallback;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
+import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -24,6 +55,22 @@ public class ProfileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private Button updateButton;
+    private Button saveButton;
+
+    private EditText nameEditText;
+    private EditText ageEditText;
+    private EditText phoneEditText;
+    private EditText storyEditText;
+
+    private ImageView profilePic;
+    private Button saveChangesButton;
+    private Button genderButton;
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int MY_CAMERA_REQUEST_CODE = 100;
+
+    String currentPhotoPath;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,7 +113,26 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+
+        }
+
         updateButton = v.findViewById(R.id.updateButton);
+        saveButton = v.findViewById(R.id.saveButton);
+
+        nameEditText = v.findViewById(R.id.nameEdit);
+        ageEditText = v.findViewById(R.id.ageEditText);
+        phoneEditText = v.findViewById(R.id.phoneEditText);
+        storyEditText = v.findViewById(R.id.storyEditText);
+
+        profilePic = v.findViewById(R.id.imageView2);
+        genderButton = v.findViewById(R.id.genderButton);
+
+
+        final String username = "Alaska";
+        prepopulateData(username);
 
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +141,147 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchPictureIntent();
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String fullName = nameEditText.getText().toString();
+                final String firstName = fullName.split(" ")[0];
+                final String lastName = fullName.split(" ")[1];
+                final String gender = genderButton.getText().toString();
+                final String ageNum = ageEditText.getText().toString();
+                final String phone = phoneEditText.getText().toString();
+                final String story = storyEditText.getText().toString();
+
+
+                BackendUtils.doPostRequest("/api/updateUser", new HashMap<String, String>() {{
+                    put("username", username);
+                    put("firstName", firstName);
+                    put("lastName", lastName);
+                    put("gender", gender);
+                    put("age", ageNum);
+                    put("phone", phone);
+                    put("story", story);
+                }}, new VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Log.d(TAG, result);
+                    }
+
+                    @Override
+                    public void onError(VolleyError notif) {
+                        Log.d(TAG, String.valueOf(notif.networkResponse.statusCode));
+
+                    }
+                }, getActivity(), getActivity());
+            }
+        });
         return v;
+    }
+
+    private void dispatchPictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (Exception ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
+                        "com.example.android.fileprovider",
+                        photoFile);
+                //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = null;
+        try {
+            image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            profilePic.setImageBitmap(imageBitmap);
+        }
+    }
+
+
+
+
+    private void prepopulateData(final String user) {
+        BackendUtils.doGetRequest("/api/getUser", new HashMap<String, String>() {{
+            put("username", user);
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    JSONObject object = jArray.getJSONObject(0);
+                    String firstName = object.getString("firstName");
+                    String lastName  =object.getString("lastName");
+                    String gender  =object.getString("gender");
+                    String age  =object.getString("age");
+                    String phone  =object.getString("phone");
+                    String story  =object.getString("story");
+
+
+
+                    if (firstName != "null"){
+                        nameEditText.setText(firstName + " " + lastName);
+                        genderButton.setText(gender);
+                        ageEditText.setText(age);
+                        phoneEditText.setText(phone);
+                        storyEditText.setText(story);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, getActivity(), getActivity());
+    }
+
+    private void getUser() {
     }
 
     // TODO: Rename method, update argument and hook method into UI event

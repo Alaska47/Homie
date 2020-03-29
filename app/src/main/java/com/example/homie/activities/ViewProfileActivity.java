@@ -17,6 +17,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +29,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.homie.R;
 
+import com.example.homie.utils.BackendUtils;
+import com.example.homie.utils.StoryCard;
 import com.example.homie.utils.UpdateCard;
 import com.example.homie.utils.UpdatesTimelineAdapter;
+import com.example.homie.utils.VolleyCallback;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -41,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.example.homie.config.Config;
@@ -50,9 +57,13 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
@@ -62,6 +73,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     UpdatesTimelineAdapter updatesTimelineAdapter;
     LinearLayoutManager llm;
     List<UpdateCard> updateModelList;
+    YouTubePlayerView youTubePlayerView;
 
     private Menu menu;
 
@@ -78,6 +90,27 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     Drawable unfilledHeart;
     Drawable filledHeart;
+    ImageView im;
+    TextView moneyRaisedDescription;
+
+    public Bitmap bitmap;
+    public String username;
+    public String firstName;
+    public int raisedMoney;
+    public int raisedMoneyGoal;
+    public String description;
+     Toolbar mToolbar;
+
+    ProgressBar moneyRaisedProgress;
+    TextView storyTitle;
+    TextView storyDescription;
+    String lastName;
+
+    CircleImageView profileIcon;
+
+    String youtubeId;
+
+    String[][] updates = {{"First donations", "I spent the first $20 on some food for the night, I went to a high quality restaurant"}, {"Second donation", "I used $50 to buy myself a suit, I'm tryna get a job at walmart"}, {"Third donation", "I spent another $50 dollars on paying for my last couple phone bills so that I can keep giving you guys updates"}};
 
     @Override
     protected void onDestroy() {
@@ -104,35 +137,94 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
+
+
         // extract user_id from intent
+        String newString;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                newString= null;
+            } else {
+                newString= extras.getString("username");
+            }
+        } else {
+            newString= (String) savedInstanceState.getSerializable("username");
+        }
+        username = newString;
+        Log.d("Username: ", username);
 
+        BackendUtils.doGetRequest("/api/getUser", new HashMap<String, String>() {{
+            put("username", username);
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                //Log.d(, result);
+                try {
+
+                    JSONArray jArray = new JSONArray(result);
+                    JSONObject object = jArray.getJSONObject(0);
+                    firstName = object.getString("firstName");
+                    raisedMoney = object.getInt("moneyRaised");
+                    raisedMoneyGoal = object.getInt("goal");
+                    description = object.getString("description");
+                    lastName = object.getString("lastName");
+                    youtubeId = object.getString("video");
+
+                    String encodedImage = object.getString("picture");
+                    byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                    //bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic);
+
+                    profileIcon.setImageBitmap(bitmap);
+
+                    setSupportActionBar(mToolbar);
+
+
+                    im.setImageBitmap(bitmap);
+
+                    storyTitle.setText(firstName+" "+lastName);
+
+                    firstName += "'s";
+
+                    // also get a time stamp for each update
+
+
+
+                    mToolbar.setTitle(firstName + " Story...");
+                    storyDescription.setText(description);
+
+                    moneyRaisedDescription.setText(String.format("$%,d raised of $%,d goal", raisedMoney, raisedMoneyGoal));
+                    moneyRaisedProgress.setProgress((int) (raisedMoney * 100.0 / (raisedMoneyGoal)));
+                    youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                        @Override
+                        public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                            youTubePlayer.loadVideo(youtubeId, 0);
+                        }
+                    });
+
+                    initializeAdapter();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d("Error: ", String.valueOf(error.networkResponse.statusCode));
+            }
+        }, this, this);
         // get data
-        String name = getResources().getString(R.string.default_cv_name);
         // decode bitmap from base64
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic);
-        String firstName = name.split(" ")[0] + "'s";
-        int raisedMoney = 120;
-        int raisedMoneyGoal = 500;
-        final String youtubeId = "adzmLBKMsfA";
-        String description = getResources().getString(R.string.default_cv_description);
-        // also get a time stamp for each update
-        String[][] updates = {{"First donations", "I spent the first $20 on some food for the night, I went to a high quality restaurant"}, {"Second donation", "I used $50 to buy myself a suit, I'm tryna get a job at walmart"}, {"Third donation", "I spent another $50 dollars on paying for my last couple phone bills so that I can keep giving you guys updates"}};
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(firstName + " Story...");
-        setSupportActionBar(mToolbar);
-
-        ImageView im = (ImageView) findViewById(R.id.expandedImage);
-        im.setImageBitmap(bitmap);
-
-        TextView moneyRaisedDescription = (TextView) findViewById(R.id.raised_money_description);
-        ProgressBar moneyRaisedProgress = (ProgressBar) findViewById(R.id.raised_money_progress);
-
-        moneyRaisedDescription.setText(String.format("$%,d raised of $%,d goal", raisedMoney, raisedMoneyGoal));
-        moneyRaisedProgress.setProgress((int) (raisedMoney * 100.0 / (raisedMoneyGoal)));
-
+        im = (ImageView) findViewById(R.id.expandedImage);
+        moneyRaisedDescription = (TextView) findViewById(R.id.raised_money_description);
+       moneyRaisedProgress = (ProgressBar) findViewById(R.id.raised_money_progress);
         amount = (EditText) findViewById(R.id.amount);
-        MaterialButton donateButton = (MaterialButton) findViewById(R.id.donate_button);
+        donateButton = (MaterialButton) findViewById(R.id.donate_button);
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,21 +232,14 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
-        YouTubePlayerView youTubePlayerView = findViewById(R.id.youtube_player_view);
+        youTubePlayerView = findViewById(R.id.youtube_player_view);
         getLifecycle().addObserver(youTubePlayerView);
 
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                youTubePlayer.loadVideo(youtubeId, 0);
-            }
-        });
 
-        TextView storyTitle = (TextView) findViewById(R.id.story_title);
-        storyTitle.setText(name);
+        storyTitle = (TextView) findViewById(R.id.story_title);
 
-        TextView storyDescription = (TextView) findViewById(R.id.story_description);
-        storyDescription.setText(description);
+        profileIcon = (CircleImageView) findViewById(R.id.profile_icon_small);
+        storyDescription = (TextView) findViewById(R.id.story_description);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager llm = new LinearLayoutManager(this);

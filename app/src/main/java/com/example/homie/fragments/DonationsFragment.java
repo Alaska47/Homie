@@ -1,23 +1,37 @@
 package com.example.homie.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.VolleyError;
 import com.example.homie.R;
+import com.example.homie.utils.BackendUtils;
 import com.example.homie.utils.DonationRow;
 import com.example.homie.utils.RVAdapterDonation;
+import com.example.homie.utils.StoryCard;
+import com.example.homie.utils.VolleyCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static android.content.ContentValues.TAG;
 
 public class DonationsFragment extends Fragment {
 
@@ -108,10 +122,40 @@ public class DonationsFragment extends Fragment {
     }
 
     private void initializeData() {
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "Matt", "For spending on suits", 120, false));
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "Kash", "For spending on food and clothing", 20, false));
+        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.anoos), "Matt", "For spending on suits", 120, false));
+        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.anoos), "Kash", "For spending on food and clothing", 20, false));
         donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "Sid", "To pay phone bills", 0, false));
         donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "John", "To pay for a nice haircut", 10, false));
+    /**
+        BackendUtils.doGetRequest("/api/getHomeless", new HashMap<String, String>() {{
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    for (int i = 0; i < jArray.length(); i++){
+                        JSONObject object = jArray.getJSONObject(i);
+
+                        DonationRow d = new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), object.getString("firstName"), object.getString("description"), object.getInt("moneyRaised"), object.getInt("goal"), object.getInt("numLikes"), object.getInt("score"));
+                        Log.d("Name: ", object.getString("firstName"));
+                        donationRowList.add(d);
+
+                    }
+                    initializeAdapter();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, getActivity(), getActivity());
+     **/
         initializeAdapter();
     }
     private void getDonos(){

@@ -72,7 +72,7 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
     }
 
     @Override
-    public void onBindViewHolder(StoryViewHolder storyViewHolder, int i) {
+    public void onBindViewHolder(StoryViewHolder storyViewHolder, final int i) {
         storyViewHolder.backgroundImage.setImageBitmap(storyCards.get(i).backgroundImage);
         storyViewHolder.name.setText(String.format("Help out %s", storyCards.get(i).name));
         storyViewHolder.description.setText(storyCards.get(i).description);
@@ -83,6 +83,7 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
         storyViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 Intent intent = new Intent(a, ViewProfileActivity.class);
+                intent.putExtra("username", storyCards.get(i).userID);
                 a.startActivity(intent);
             }
         });

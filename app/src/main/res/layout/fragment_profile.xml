@@ -18,7 +18,7 @@
         />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/nameEdit"
         android:layout_width="367dp"
         android:layout_height="50dp"
         android:layout_marginStart="32dp"
@@ -35,7 +35,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/ageEditText"
             android:layout_width="72dp"
             android:layout_height="40dp"
             android:layout_marginStart="32dp"
@@ -45,7 +45,7 @@
             android:inputType="number" />
 
         <ToggleButton
-            android:id="@+id/toggleButton"
+            android:id="@+id/genderButton"
             android:layout_width="75dp"
             android:layout_height="47dp"
             android:layout_marginStart="12dp"
@@ -55,7 +55,7 @@
             android:textOn="FEMALE"/>
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/phoneEditText"
             android:layout_width="183dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -68,7 +68,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/storyEditText"
         android:layout_width="370dp"
         android:layout_height="157dp"
         android:layout_marginTop="16dp"
@@ -94,7 +94,7 @@
             android:visibility="visible" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/saveButton"
             android:layout_width="385dp"
             android:layout_height="50dp"
             android:text="Save Changes" />

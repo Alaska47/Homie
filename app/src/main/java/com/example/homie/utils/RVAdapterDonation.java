@@ -21,9 +21,11 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.DonationViewHolder>{
     public static class DonationViewHolder extends RecyclerView.ViewHolder {
-        ImageView userProfile;
+        CircleImageView userProfile;
         TextView title;
         TextView description;
         TextView donationMoney;
@@ -34,7 +36,7 @@ public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.Do
 
         DonationViewHolder(View itemView) {
             super(itemView);
-            userProfile = (ImageView) itemView.findViewById(R.id.profile_icon);
+            userProfile = (CircleImageView) itemView.findViewById(R.id.profile_icon);
             title = (TextView) itemView.findViewById(R.id.donation_title);
             description = (TextView) itemView.findViewById(R.id.donation_description);
             donationMoney = (TextView) itemView.findViewById(R.id.donation_money);

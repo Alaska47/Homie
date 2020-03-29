@@ -105,13 +105,15 @@
                 android:paddingBottom="5dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_icon_small"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:src="@drawable/profile_icon">
-                </ImageView>
+                    android:src="@drawable/profile_icon"
+                    app:civ_border_color="#FF000000"/>
 
                 <TextView
                     android:id="@+id/story_title"

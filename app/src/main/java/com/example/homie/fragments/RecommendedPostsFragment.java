@@ -108,7 +108,7 @@ public class RecommendedPostsFragment extends Fragment {
                         String encodedImage = object.getString("picture");
                         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        StoryCard s = new StoryCard(decodedByte, object.getString("firstName"), object.getString("description"), object.getInt("moneyRaised"), object.getInt("goal"), object.getInt("numLikes"), object.getInt("score"));
+                        StoryCard s = new StoryCard(object.getString("userName"), decodedByte, object.getString("firstName"), object.getString("description"), object.getInt("moneyRaised"), object.getInt("goal"), object.getInt("numLikes"), object.getInt("score"));
                         Log.d("Name: ", object.getString("firstName"));
                         storyCards.add(s);
 
