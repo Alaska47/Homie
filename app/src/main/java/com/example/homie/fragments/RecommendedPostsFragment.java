@@ -70,55 +70,32 @@ public class RecommendedPostsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        storyCards = new ArrayList<>();
+        initializeData();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recommended_posts, container, false);
-
-
-
-        rv = (RecyclerView) v.findViewById(R.id.rv);
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        rv.setLayoutManager(llm);
-
-        storyCards = new ArrayList<>();
-
-        initializeAdapter();
-        initializeData();
-        Log.wtf("Initialized", "hi");
-
         return v;
     }
 
-    /**
     @Override
-    public void onResume() {
-        super.onResume();
-        initializeData();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rv = (RecyclerView) view.findViewById(R.id.rv);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        rv.setLayoutManager(llm);
+        initializeAdapter();
     }
-    **/
 
     private void initializeAdapter() {
         adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
-    /**
-    @Override
-    public void onDestroyView(){
-        super.onDestroyView();
-        rv.setAdapter(null);
-        adapter = null;
-        rv = null;
-    }
-    **/
 
     private void initializeData() {
-        /**
-        storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), getResources().getString(R.string.default_cv_name), getResources().getString(R.string.default_cv_description), 10000, 12000, 45, 32));
-        storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic2), "John", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et nemo nimium beatus est; Dulce amarum, leve asperum, prope longe, stare movere, quadratum rotundum.", 412, 1000, 12, 3233));
-        storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), getResources().getString(R.string.default_cv_name), getResources().getString(R.string.default_cv_description), 2123, 8000, 4500, 0));
-         **/
         storyCards.clear();
         BackendUtils.doGetRequest("/api/getHomeless", new HashMap<String, String>() {{
         }}, new VolleyCallback() {
