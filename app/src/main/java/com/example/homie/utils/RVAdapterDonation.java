@@ -1,58 +1,65 @@
 package com.example.homie.utils;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.homie.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.DonationViewHolder>{
     public static class DonationViewHolder extends RecyclerView.ViewHolder {
-        CardView cv;
-        ImageView backgroundImage;
-        TextView name;
+        ImageView userProfile;
+        TextView title;
         TextView description;
-        ProgressBar moneyRaisedProgress;
-        TextView moneyRaisedDescription;
-        TextView numLikes;
-        TextView numKarma;
+        TextView donationMoney;
+        ImageButton messageButton;
+        ImageButton callButton;
+        LinearLayout ll;
+        LinearLayout ll2;
 
         DonationViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            backgroundImage = (ImageView) itemView.findViewById(R.id.cv_background_image);
-            name = (TextView) itemView.findViewById(R.id.cv_name);
-            description = (TextView) itemView.findViewById(R.id.cv_description);
-            moneyRaisedProgress = (ProgressBar) itemView.findViewById(R.id.cv_raised_money);
-            moneyRaisedDescription = (TextView) itemView.findViewById(R.id.cv_raised_money_description);
-            numLikes = (TextView) itemView.findViewById(R.id.cv_num_likes);
-            numKarma = (TextView) itemView.findViewById(R.id.cv_num_karma);
+            userProfile = (ImageView) itemView.findViewById(R.id.profile_icon);
+            title = (TextView) itemView.findViewById(R.id.donation_title);
+            description = (TextView) itemView.findViewById(R.id.donation_description);
+            donationMoney = (TextView) itemView.findViewById(R.id.donation_money);
+            messageButton = (ImageButton) itemView.findViewById(R.id.message_button);
+            callButton = (ImageButton) itemView.findViewById(R.id.call_button);
+            ll = (LinearLayout) itemView.findViewById(R.id.money_ll);
+            ll2 = (LinearLayout) itemView.findViewById(R.id.call_msg_button_layout);
         }
     }
 
-    List<StoryCard> storyCards;
+    List<DonationRow> donations;
 
-    public RVAdapterDonation(List<StoryCard> stories){
-        this.storyCards = stories;
+    public RVAdapterDonation(List<DonationRow> donations){
+        this.donations = donations;
     }
 
     @Override
     public int getItemCount() {
-        if(storyCards == null)
+        if(donations == null)
             return 0;
-        return storyCards.size();
+        return donations.size();
     }
 
     public void clear() {
-        storyCards.clear();
+        donations.clear();
         notifyDataSetChanged();
     }
 
@@ -65,22 +72,11 @@ public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.Do
 
     @Override
     public void onBindViewHolder(DonationViewHolder donationViewHolder, int i) {
-        storyViewHolder.backgroundImage.setImageBitmap(storyCards.get(i).backgroundImage);
-        storyViewHolder.name.setText(String.format("Help out %s", storyCards.get(i).name));
-        storyViewHolder.description.setText(storyCards.get(i).description);
-        storyViewHolder.moneyRaisedDescription.setText(String.format("$%,d raised of $%,d goal", storyCards.get(i).moneyRaised, storyCards.get(i).moneyRaisedGoal));
-        storyViewHolder.moneyRaisedProgress.setProgress((int) (storyCards.get(i).moneyRaised * 100.0 / (storyCards.get(i).moneyRaisedGoal)));
-        storyViewHolder.numLikes.setText(String.format("%s", format(storyCards.get(i).numLikes)));
-        storyViewHolder.numKarma.setText(String.format("%s", format(storyCards.get(i).numKarma)));
-    }
-
-    private String format(int num) {
-        if (num >= 100000)
-            return format(num / 1000) + "k";
-        if (num >= 1000) {
-            return String.format("%.1fk", num / 1000D);
-        }
-        return String.format("%,d", num);
+        boolean isDonor = donations.get(i).isDonor;
+        donationViewHolder.userProfile.setImageBitmap(donations.get(i).profilePic);
+        donationViewHolder.title.setText(String.format("To %s", donations.get(i).donationTitle));
+        donationViewHolder.description.setText(donations.get(i).donationDescription);
+        donationViewHolder.donationMoney.setText(String.format("$%,d", donations.get(i).donationAmount));
     }
 
     @Override

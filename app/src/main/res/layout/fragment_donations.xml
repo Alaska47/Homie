@@ -6,30 +6,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.DonationsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="match_parent">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/cash_out_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_gravity="bottom"
-        app:icon="@drawable/ic_attach_money_white_24dp"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-        app:iconGravity="textStart"
-        android:text="cash out"/>
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
-        android:id="@+id/donation_error_message"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:text="Donation error message"/>
+        <TextView
+            android:id="@+id/donation_error_message"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:text="Donation error message"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cash_out_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            app:icon="@drawable/ic_attach_money_white_24dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:iconGravity="textStart"
+            android:text="cash out"/>
+
+    </RelativeLayout>
+
+
+
+
+
+
 
 </FrameLayout>

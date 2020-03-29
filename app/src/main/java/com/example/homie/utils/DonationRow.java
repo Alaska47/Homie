@@ -7,11 +7,13 @@ public class DonationRow {
     public String donationTitle;
     public String donationDescription;
     public int donationAmount;
+    public boolean isDonor;
 
-    public DonationRow(Bitmap image, String name, String description, int money) {
+    public DonationRow(Bitmap image, String name, String description, int money, boolean isDonor) {
         this.profilePic = image;
         this.donationTitle = name;
         this.donationDescription = description;
         this.donationAmount = money;
+        this.isDonor = isDonor;
     }
 }

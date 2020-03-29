@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:paddingTop="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:layout_height="wrap_content">
+    android:paddingBottom="8dp"
+    android:layout_height="72dp">
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/profile_icon"/>
+        android:id="@+id/profile_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/profile_icon" />
 
     <LinearLayout
         android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/profile_icon"
         android:layout_marginLeft="10dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -22,22 +27,22 @@
         <TextView
             android:id="@+id/donation_title"
             android:layout_width="wrap_content"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/md_black_1000"
             android:layout_height="0dp"
-            android:gravity="center"
+            android:gravity="bottom"
             android:layout_weight="1"
             android:text="Donation to Mike"/>
 
         <TextView
             android:id="@+id/donation_description"
             android:layout_width="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:text="Hi guys! I'm homeless and it sucks"
-            android:maxWidth="200dp"
+            android:maxWidth="150dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="top"
             android:textColor="@color/md_grey_500"
             android:layout_height="0dp"
             android:layout_weight="1" />
@@ -45,12 +50,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/money_ll"
+        android:layout_toLeftOf="@id/call_msg_button_layout"
         android:layout_width="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/donation_money"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="$12"
@@ -61,31 +69,35 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_marginLeft="10dp"
-        android:gravity="right"
+        android:id="@+id/call_msg_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentRight="true"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/message_button"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
-            app:icon="@drawable/ic_message_white_24dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            app:iconGravity="end"/>
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_message_white_24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            />
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/call_button"
             android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:visibility="visible"
-            app:icon="@drawable/ic_call_white_24dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            app:iconGravity="end"/>
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_call_white_24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            />
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
