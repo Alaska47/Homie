@@ -65,7 +65,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter Amount (USD)"
                 android:inputType="numberDecimal"
-                android:gravity="center">
+                android:gravity="center"
+                android:id="@+id/amount">
 
             </EditText>
 
@@ -75,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Donate"
                 android:textColor="@color/md_white_1000"
+                android:textColorHint="@color/md_white_1000"
                 >
 
 
