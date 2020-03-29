@@ -102,7 +102,7 @@ public class RecommendedPostsFragment extends Fragment {
     }
 
     private void initializeAdapter() {
-        adapter = new RVAdapterStory(storyCards);
+        adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
 
