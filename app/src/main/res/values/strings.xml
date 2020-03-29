@@ -3,7 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="default_cv_name">Andy</string>
+    <string name="default_cv_name">John Doe</string>
     <string name="default_cv_description">Hey guys! I\'m an ex-Marine who\'s been affected by the COVID-19 pandemic. I couldn\'t afford mortgage payments on my house and now I\'m living in the streets. I need your help with supporting my family</string>
     <string name="default_cv_raised_money_description">$10,212 raised of $12,000 goal</string>
     <string name="default_cv_likes">5.2k</string>
