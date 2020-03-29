@@ -27,7 +27,7 @@ public class HighlightedPostsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static final String TAG = "HighlightedPostsFragment";
+    public static final String TAG = "HighlightPostsFragment";
 
     private String mParam1;
     private String mParam2;
@@ -103,7 +103,7 @@ public class HighlightedPostsFragment extends Fragment {
     }
 
     private void initializeAdapter() {
-        adapter = new RVAdapterStory(storyCards);
+        adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
 

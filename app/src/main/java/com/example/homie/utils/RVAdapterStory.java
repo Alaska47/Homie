@@ -1,6 +1,8 @@
 package com.example.homie.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.homie.R;
+import com.example.homie.activities.ViewProfileActivity;
 
 import java.util.List;
 
@@ -42,9 +45,11 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
     }
 
     List<StoryCard> storyCards;
+    Context a;
 
-    public RVAdapterStory(List<StoryCard> stories){
+    public RVAdapterStory(List<StoryCard> stories, Context a){
         this.storyCards = stories;
+        this.a = a;
     }
 
     @Override
@@ -75,6 +80,12 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
         storyViewHolder.moneyRaisedProgress.setProgress((int) (storyCards.get(i).moneyRaised * 100.0 / (storyCards.get(i).moneyRaisedGoal)));
         storyViewHolder.numLikes.setText(String.format("%s", format(storyCards.get(i).numLikes)));
         storyViewHolder.numKarma.setText(String.format("%s", format(storyCards.get(i).numKarma)));
+        storyViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Intent intent = new Intent(a, ViewProfileActivity.class);
+                a.startActivity(intent);
+            }
+        });
     }
 
     private String format(int num) {
