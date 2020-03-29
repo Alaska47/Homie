@@ -3,7 +3,10 @@ package com.example.homie.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,7 +14,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,6 +63,10 @@ public class ViewProfileActivity extends AppCompatActivity {
     LinearLayoutManager llm;
     List<UpdateCard> updateModelList;
 
+    private Menu menu;
+
+    boolean selectedHeart = false;
+
     private static final int PAYPAL_REQUEST_CODE = 7171;
 
     private static PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(Config.PAYPAL_CLIENT_ID);
@@ -65,10 +76,27 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     String amountNum ="";
 
+    Drawable unfilledHeart;
+    Drawable filledHeart;
+
     @Override
     protected void onDestroy() {
         stopService(new Intent(this, PayPalService.class));
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.view_profile_menu, menu);
+
+        filledHeart = AppCompatResources.getDrawable(this, R.drawable.ic_favorite_white_24dp);
+        Drawable unwrappedDrawable = AppCompatResources.getDrawable(this, R.drawable.ic_favorite_border_black_24dp);
+        unfilledHeart = DrawableCompat.wrap(unwrappedDrawable);
+        DrawableCompat.setTint(unfilledHeart, Color.WHITE);
+        menu.getItem(0).setIcon(unfilledHeart);
+
+        return true;
     }
 
     @Override
@@ -189,5 +217,27 @@ public class ViewProfileActivity extends AppCompatActivity {
         } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
             Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_heart) {
+            if(selectedHeart == false) {
+                menu.getItem(0).setIcon(filledHeart);
+                Toast.makeText(this, "Liked!", Toast.LENGTH_SHORT).show();
+                selectedHeart = true;
+            } else {
+                menu.getItem(0).setIcon(unfilledHeart);
+                Toast.makeText(this, "Unliked!", Toast.LENGTH_SHORT).show();
+                selectedHeart = false;
+            }
+            return true;
+        }
+        return false;
     }
 }
