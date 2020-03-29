@@ -1,8 +1,5 @@
 package com.example.homie.utils;
 
-import android.app.Activity;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +14,8 @@ import java.util.List;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryViewHolder>{
-    public static class StoryViewHolder extends RecyclerView.ViewHolder {
+public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.DonationViewHolder>{
+    public static class DonationViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
         ImageView backgroundImage;
         TextView name;
@@ -28,7 +25,7 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
         TextView numLikes;
         TextView numKarma;
 
-        StoryViewHolder(View itemView) {
+        DonationViewHolder(View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.cv);
             backgroundImage = (ImageView) itemView.findViewById(R.id.cv_background_image);
@@ -43,7 +40,7 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
 
     List<StoryCard> storyCards;
 
-    public RVAdapterStory(List<StoryCard> stories){
+    public RVAdapterDonation(List<StoryCard> stories){
         this.storyCards = stories;
     }
 
@@ -60,14 +57,14 @@ public class RVAdapterStory extends RecyclerView.Adapter<RVAdapterStory.StoryVie
     }
 
     @Override
-    public StoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.story_card, viewGroup, false);
-        StoryViewHolder pvh = new StoryViewHolder(v);
+    public DonationViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.donation_row, viewGroup, false);
+        DonationViewHolder pvh = new DonationViewHolder(v);
         return pvh;
     }
 
     @Override
-    public void onBindViewHolder(StoryViewHolder storyViewHolder, int i) {
+    public void onBindViewHolder(DonationViewHolder donationViewHolder, int i) {
         storyViewHolder.backgroundImage.setImageBitmap(storyCards.get(i).backgroundImage);
         storyViewHolder.name.setText(String.format("Help out %s", storyCards.get(i).name));
         storyViewHolder.description.setText(storyCards.get(i).description);

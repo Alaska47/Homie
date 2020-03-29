@@ -6,6 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.DonationsFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cash_out_button"
         android:layout_width="match_parent"
