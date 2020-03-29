@@ -10,7 +10,7 @@
     android:title="" />
     <item
         android:id="@+id/donations"
-        android:icon="@drawable/ic_attach_money_white_24dp"
+        android:icon="@drawable/ic_archive_white_24dp"
         android:title="" />
     <item
         android:id="@+id/profile"
