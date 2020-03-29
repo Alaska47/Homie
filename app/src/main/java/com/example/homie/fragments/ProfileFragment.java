@@ -1,13 +1,16 @@
 package com.example.homie.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.homie.R;
+import com.example.homie.activities.NewUpdateActivity;
 
 import androidx.fragment.app.Fragment;
 
@@ -20,6 +23,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Button updateButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -52,13 +56,26 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        updateButton = v.findViewById(R.id.updateButton);
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NewUpdateActivity.class);
+                startActivity(intent);
+            }
+        });
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
