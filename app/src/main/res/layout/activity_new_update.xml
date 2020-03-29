@@ -8,7 +8,7 @@
 
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/postUpdateButton"
         android:layout_width="385dp"
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
@@ -19,17 +19,17 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/attachButton"
         android:layout_width="227dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:text="Attach Video/Image"
+        android:text="Attach Images"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText6" />
+        app:layout_constraintTop_toBottomOf="@+id/bioEditText" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/updateTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText6"
+        android:id="@+id/bioEditText"
         android:layout_width="343dp"
         android:layout_height="180dp"
         android:layout_marginTop="16dp"
@@ -53,5 +53,5 @@
         android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/updateTitleText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

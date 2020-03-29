@@ -10,11 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.VolleyError;
 import com.example.homie.R;
+import com.example.homie.utils.BackendUtils;
 import com.example.homie.utils.RVAdapterStory;
 import com.example.homie.utils.StoryCard;
+import com.example.homie.utils.VolleyCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
@@ -66,7 +70,20 @@ public class RecommendedPostsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recommended_posts, container, false);
+        /**
+        BackendUtils.doGetRequest("/grades/", new HashMap<String, String>() {{
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+            }
 
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, getActivity(), getActivity());
+    **/
         rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
