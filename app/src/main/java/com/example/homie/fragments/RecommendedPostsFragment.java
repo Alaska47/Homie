@@ -70,9 +70,6 @@ public class RecommendedPostsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        storyCards = new ArrayList<>();
-        initializeData();
     }
 
     @Override
@@ -87,12 +84,12 @@ public class RecommendedPostsFragment extends Fragment {
         rv = (RecyclerView) view.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
-        
-        initializeAdapter();
+
+        storyCards = new ArrayList<>();
+        initializeData();
     }
 
     private void initializeAdapter() {
-        Log.d("initAdapter" ,"hi");
         adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
@@ -116,6 +113,7 @@ public class RecommendedPostsFragment extends Fragment {
                         storyCards.add(s);
 
                     }
+                    initializeAdapter();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -128,10 +126,6 @@ public class RecommendedPostsFragment extends Fragment {
                 Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
             }
         }, getActivity(), getActivity());
-        if (rv != null){
-            initializeAdapter();
-            adapter.notifyDataSetChanged();
-        }
     }
 
     public void onButtonPressed(Uri uri) {
