@@ -114,4 +114,21 @@ public class DonationsFragment extends Fragment {
         donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "John", "To pay for a nice haircut", 10, false));
         initializeAdapter();
     }
+    private void getDonos(){
+        /**
+         * Hashmap needs to have username
+         BackendUtils.doGetRequest("/api/getDonations/", new HashMap<String, String>() {{
+         }}, new VolleyCallback() {
+        @Override
+        public void onSuccess(String result) {
+        Log.d(TAG, result);
+        }
+
+        @Override
+        public void onError(VolleyError error) {
+        Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+        }
+        }, getActivity(), getActivity());
+         **/
+    }
 }

@@ -71,7 +71,8 @@ public class RecommendedPostsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recommended_posts, container, false);
         /**
-        BackendUtils.doGetRequest("/grades/", new HashMap<String, String>() {{
+         * Hashmap needs to have username
+        BackendUtils.doGetRequest("/api/getRecommendations/", new HashMap<String, String>() {{
         }}, new VolleyCallback() {
             @Override
             public void onSuccess(String result) {
