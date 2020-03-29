@@ -87,10 +87,12 @@ public class RecommendedPostsFragment extends Fragment {
         rv = (RecyclerView) view.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
+        
         initializeAdapter();
     }
 
     private void initializeAdapter() {
+        Log.d("initAdapter" ,"hi");
         adapter = new RVAdapterStory(storyCards, getActivity());
         rv.setAdapter(adapter);
     }
@@ -126,7 +128,10 @@ public class RecommendedPostsFragment extends Fragment {
                 Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
             }
         }, getActivity(), getActivity());
-        initializeAdapter();
+        if (rv != null){
+            initializeAdapter();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void onButtonPressed(Uri uri) {
