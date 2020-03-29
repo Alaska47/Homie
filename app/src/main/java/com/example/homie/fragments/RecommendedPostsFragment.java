@@ -25,6 +25,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -70,21 +74,9 @@ public class RecommendedPostsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recommended_posts, container, false);
-        /**
-         * Hashmap needs to have username
-        BackendUtils.doGetRequest("/api/getRecommendations/", new HashMap<String, String>() {{
-        }}, new VolleyCallback() {
-            @Override
-            public void onSuccess(String result) {
-                Log.d(TAG, result);
-            }
 
-            @Override
-            public void onError(VolleyError error) {
-                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
-            }
-        }, getActivity(), getActivity());
-    **/
+
+
         rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
@@ -97,9 +89,11 @@ public class RecommendedPostsFragment extends Fragment {
         return v;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+        initializeData();
     }
 
     private void initializeAdapter() {
@@ -108,9 +102,37 @@ public class RecommendedPostsFragment extends Fragment {
     }
 
     private void initializeData() {
+        /**
         storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), getResources().getString(R.string.default_cv_name), getResources().getString(R.string.default_cv_description), 10000, 12000, 45, 32));
         storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic2), "John", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et nemo nimium beatus est; Dulce amarum, leve asperum, prope longe, stare movere, quadratum rotundum.", 412, 1000, 12, 3233));
         storyCards.add(new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), getResources().getString(R.string.default_cv_name), getResources().getString(R.string.default_cv_description), 2123, 8000, 4500, 0));
+         **/
+        BackendUtils.doGetRequest("/api/getHomeless", new HashMap<String, String>() {{
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    for (int i = 0; i < jArray.length(); i++){
+                        JSONObject object = jArray.getJSONObject(i);
+                        StoryCard s = new StoryCard(BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic), object.getString("firstName"), object.getString("description"), object.getInt("goal"), object.getInt("moneyRaised"), object.getInt("numLikes"), object.getInt("score"));
+                        Log.d("Name: ", object.getString("firstName"));
+                        storyCards.add(s);
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, getActivity(), getActivity());
         initializeAdapter();
     }
 

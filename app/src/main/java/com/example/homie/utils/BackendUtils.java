@@ -24,9 +24,8 @@ import java.util.Map;
 
 public class BackendUtils {
     public static String TAG = "BackendUtils";
-    
-    private static String IP = "https://homiest.herokuapp.com";
 
+    private static String IP = "https://homiest.herokuapp.com";
 
     private static String result = "";
 
