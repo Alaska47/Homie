@@ -51,6 +51,8 @@ public class RecommendedPostsFragment extends Fragment {
     private RecyclerView rv;
     private RVAdapterStory adapter;
 
+    private boolean loading = false;
+
     public RecommendedPostsFragment() {}
 
     public static RecommendedPostsFragment newInstance(String param1, String param2) {
@@ -93,7 +95,8 @@ public class RecommendedPostsFragment extends Fragment {
         rv.setLayoutManager(llm);
 
         storyCards = new ArrayList<>();
-        initializeData();
+        if(!loading)
+            initializeData();
     }
 
     private void initializeAdapter() {
@@ -118,10 +121,7 @@ public class RecommendedPostsFragment extends Fragment {
                         StoryCard s = new StoryCard(object.getString("userName"), decodedByte, object.getString("firstName"), object.getString("description"), object.getInt("moneyRaised"), object.getInt("goal"), object.getInt("numLikes"), object.getInt("score"));
                         Log.d("Name: ", object.getString("firstName"));
                         storyCards.add(s);
-
                     }
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
