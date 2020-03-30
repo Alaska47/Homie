@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.example.homie.R;
 import com.example.homie.activities.NewUpdateActivity;
 import com.example.homie.utils.BackendUtils;
+import com.example.homie.utils.DataStorage;
 import com.example.homie.utils.StoryCard;
 import com.example.homie.utils.VolleyCallback;
 
@@ -122,7 +123,6 @@ public class ProfileFragment extends Fragment {
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-
         }
 
         updateButton = v.findViewById(R.id.updateButton);
@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
         genderButton = v.findViewById(R.id.genderButton);
 
 
-        final String username = "Alaska";
+        final String username = new DataStorage(getActivity()).getData("username");
         prepopulateData(username);
 
         updateButton.setOnClickListener(new View.OnClickListener() {
@@ -279,11 +279,15 @@ public class ProfileFragment extends Fragment {
 
                     if(firstName.equals("null")) return;
 
-                    String lastName  =object.getString("lastName");
-                    String gender  =object.getString("Gender");
-                    String age  =object.getString("Age");
-                    String phone  =object.getString("phoneNumber");
-                    String story  =object.getString("description");
+                    String lastName = object.getString("lastName");
+                    String gender  = object.getString("Gender");
+                    String age = object.getString("Age");
+                    String phone = object.getString("phoneNumber");
+                    String story = object.getString("description");
+
+                    String encodedImage = object.getString("picture");
+                    byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
                     Log.d("First name", firstName);
 
@@ -292,8 +296,7 @@ public class ProfileFragment extends Fragment {
                     ageEditText.setText(age);
                     phoneEditText.setText(phone);
                     storyEditText.setText(story);
-
-
+                    profilePic.setImageBitmap(decodedByte);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

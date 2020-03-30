@@ -12,6 +12,7 @@ import com.example.homie.fragments.DonationsFragment;
 import com.example.homie.fragments.HighlightedPostsFragment;
 import com.example.homie.fragments.ProfileFragment;
 import com.example.homie.fragments.RecommendedPostsFragment;
+import com.example.homie.utils.DataStorage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -25,11 +26,14 @@ public class HomeActivity extends AppCompatActivity implements HighlightedPostsF
     BottomNavigationView bottomNavigation;
     ActionBar actionBar;
     public String TAG = "HomeActivity";
+    public final String USERNAME = "Nerja";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new DataStorage(this).storeData("username", USERNAME, false);
 
         actionBar = getSupportActionBar();
 

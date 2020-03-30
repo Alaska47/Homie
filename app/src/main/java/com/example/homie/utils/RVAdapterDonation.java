@@ -1,6 +1,9 @@
 package com.example.homie.utils;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.widget.TextView;
 import com.example.homie.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -48,9 +53,11 @@ public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.Do
     }
 
     List<DonationRow> donations;
+    Activity a;
 
-    public RVAdapterDonation(List<DonationRow> donations){
+    public RVAdapterDonation(List<DonationRow> donations, Activity a){
         this.donations = donations;
+        this.a = a;
     }
 
     @Override
@@ -79,6 +86,19 @@ public class RVAdapterDonation extends RecyclerView.Adapter<RVAdapterDonation.Do
         donationViewHolder.title.setText(String.format("To %s", donations.get(i).donationTitle));
         donationViewHolder.description.setText(donations.get(i).donationDescription);
         donationViewHolder.donationMoney.setText(String.format("$%,d", donations.get(i).donationAmount));
+        final String number = donations.get(i).phoneNumber;
+        donationViewHolder.callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + number));
+                    a.startActivity(callIntent);
+                } catch(SecurityException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
