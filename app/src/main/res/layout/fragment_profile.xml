@@ -6,16 +6,18 @@
     android:gravity="center|top"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
 
-        android:src="@drawable/ic_launcher_background"
-        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/imageView2"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:src="@drawable/profile_icon"
+        app:civ_border_color="#FF000000"/>
+
+
 
     <EditText
         android:id="@+id/nameEdit"
@@ -46,9 +48,9 @@
 
         <ToggleButton
             android:id="@+id/genderButton"
-            android:layout_width="75dp"
+            android:layout_width="80dp"
             android:layout_height="47dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
             android:text="ToggleButton"
             android:textOff="MALE"
@@ -76,6 +78,15 @@
         android:gravity="start|top"
         android:hint="What's your story?"
         android:inputType="textMultiLine"/>
+    <EditText
+        android:id="@+id/goalText"
+        android:layout_width="370dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Set a Goal for your donators (USD)"
+        android:inputType="text"/>
 
 
     <LinearLayout

@@ -113,11 +113,13 @@ public class RecommendedPostsFragment extends Fragment {
                         storyCards.add(s);
 
                     }
-                    initializeAdapter();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                initializeAdapter();
 
             }
 

@@ -36,11 +36,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -61,8 +64,11 @@ public class ProfileFragment extends Fragment {
     private EditText ageEditText;
     private EditText phoneEditText;
     private EditText storyEditText;
+    private EditText goalText;
 
-    private ImageView profilePic;
+    private Bitmap b;
+
+    private CircleImageView profilePic;
     private Button saveChangesButton;
     private Button genderButton;
 
@@ -126,6 +132,7 @@ public class ProfileFragment extends Fragment {
         ageEditText = v.findViewById(R.id.ageEditText);
         phoneEditText = v.findViewById(R.id.phoneEditText);
         storyEditText = v.findViewById(R.id.storyEditText);
+        goalText = v.findViewById(R.id.goalText);
 
         profilePic = v.findViewById(R.id.imageView2);
         genderButton = v.findViewById(R.id.genderButton);
@@ -158,16 +165,20 @@ public class ProfileFragment extends Fragment {
                 final String ageNum = ageEditText.getText().toString();
                 final String phone = phoneEditText.getText().toString();
                 final String story = storyEditText.getText().toString();
+                final String goal = goalText.getText().toString();
 
+                //b = Bitmap.createScaledBitmap(b, 640, 480, false);
+                //final String b64 = encodeTobase64(b);
 
-                BackendUtils.doPostRequest("/api/updateUser", new HashMap<String, String>() {{
+                BackendUtils.doPostRequest("/api/getHomeless2", new HashMap<String, String>() {{
                     put("username", username);
-                    put("firstName", firstName);
-                    put("lastName", lastName);
+                    put("firstname", firstName);
+                    put("lastname", lastName);
                     put("gender", gender);
                     put("age", ageNum);
                     put("phone", phone);
                     put("story", story);
+                    put("goal", goal);
                 }}, new VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
@@ -183,6 +194,20 @@ public class ProfileFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+        return imageEncoded;
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
     private void dispatchPictureIntent() {
@@ -232,8 +257,8 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            profilePic.setImageBitmap(imageBitmap);
+            b = (Bitmap) extras.get("data");
+            profilePic.setImageBitmap(b);
         }
     }
 
@@ -251,21 +276,23 @@ public class ProfileFragment extends Fragment {
                     JSONArray jArray = new JSONArray(result);
                     JSONObject object = jArray.getJSONObject(0);
                     String firstName = object.getString("firstName");
+
+                    if(firstName.equals("null")) return;
+
                     String lastName  =object.getString("lastName");
-                    String gender  =object.getString("gender");
-                    String age  =object.getString("age");
-                    String phone  =object.getString("phone");
-                    String story  =object.getString("story");
+                    String gender  =object.getString("Gender");
+                    String age  =object.getString("Age");
+                    String phone  =object.getString("phoneNumber");
+                    String story  =object.getString("description");
 
+                    Log.d("First name", firstName);
 
+                    nameEditText.setText(firstName + " " + lastName);
+                    genderButton.setText(gender);
+                    ageEditText.setText(age);
+                    phoneEditText.setText(phone);
+                    storyEditText.setText(story);
 
-                    if (firstName != "null"){
-                        nameEditText.setText(firstName + " " + lastName);
-                        genderButton.setText(gender);
-                        ageEditText.setText(age);
-                        phoneEditText.setText(phone);
-                        storyEditText.setText(story);
-                    }
 
 
                 } catch (JSONException e) {

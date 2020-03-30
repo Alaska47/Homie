@@ -84,6 +84,8 @@ public class BackendUtils {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+        stringRequest.setShouldCache(false);
+
         RequestQueueSingleton.getInstance(context)
                 .getRequestQueue().add(stringRequest);
     }
