@@ -1,10 +1,13 @@
 package com.example.homie.fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import com.android.volley.VolleyError;
 import com.example.homie.R;
 import com.example.homie.utils.BackendUtils;
+import com.example.homie.utils.DataStorage;
 import com.example.homie.utils.DonationRow;
 import com.example.homie.utils.RVAdapterDonation;
 import com.example.homie.utils.StoryCard;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,14 +80,51 @@ public class DonationsFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_donations, container, false);
 
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 101);
+        }
+
         rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
 
         donationRowList = new ArrayList<>();
 
-        initializeAdapter();
-        initializeData();
+        final String username = new DataStorage(getActivity()).getData("username");
+
+        BackendUtils.doGetRequest("/api/getDonations", new HashMap<String, String>() {{
+            put("username", username);
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    for(int i = 0; i < jArray.length(); i++) {
+                        JSONObject object = jArray.getJSONObject(i);
+                        String amount = object.getString("amount");
+                        String description = object.getString("description");
+                        String donatorId = object.getString("donatorId");
+                        String donatorPhone = object.getString("donatorPhone");
+                        String encodedImage = object.getString("picture");
+                        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                        donationRowList.add(new DonationRow(decodedByte, donatorId, description, Integer.parseInt(amount), donatorPhone, true));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                initializeAdapter();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, getActivity(), getActivity());
 
         return v;
     }
@@ -117,15 +159,15 @@ public class DonationsFragment extends Fragment {
     }
 
     private void initializeAdapter() {
-        adapter = new RVAdapterDonation(donationRowList);
+        adapter = new RVAdapterDonation(donationRowList, getActivity());
         rv.setAdapter(adapter);
     }
 
     private void initializeData() {
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.anoos), "Matt", "For spending on suits", 120, false));
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.anoos), "Kash", "For spending on food and clothing", 20, false));
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "Sid", "To pay phone bills", 0, false));
-        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "John", "To pay for a nice haircut", 10, false));
+
+//        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.anoos), "Kash", "For spending on food and clothing", 20, false));
+//        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "Sid", "To pay phone bills", 0, false));
+//        donationRowList.add(new DonationRow(BitmapFactory.decodeResource(getResources(), R.drawable.profile_icon), "John", "To pay for a nice haircut", 10, false));
     /**
         BackendUtils.doGetRequest("/api/getHomeless", new HashMap<String, String>() {{
         }}, new VolleyCallback() {

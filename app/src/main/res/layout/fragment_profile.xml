@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center|top"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
@@ -13,7 +12,6 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
         android:src="@drawable/profile_icon"
         app:civ_border_color="#FF000000"/>
 
@@ -21,9 +19,8 @@
 
     <EditText
         android:id="@+id/nameEdit"
-        android:layout_width="367dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
@@ -40,7 +37,6 @@
             android:id="@+id/ageEditText"
             android:layout_width="72dp"
             android:layout_height="40dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="Age"
@@ -71,17 +67,18 @@
 
     <EditText
         android:id="@+id/storyEditText"
-        android:layout_width="370dp"
-        android:layout_height="157dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="What's your story?"
         android:inputType="textMultiLine"/>
+
     <EditText
         android:id="@+id/goalText"
-        android:layout_width="370dp"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:gravity="start|top"
@@ -91,26 +88,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center|bottom"
         android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/updateButton"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="409dp"
-            android:layout_height="49dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="Post an Update"
-            android:visibility="visible" />
+            android:text="Post an Update" />
 
         <Button
             android:id="@+id/saveButton"
-            android:layout_width="385dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Save Changes" />
-
-
 
     </LinearLayout>
 

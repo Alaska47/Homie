@@ -35,7 +35,7 @@
             app:icon="@drawable/ic_attach_money_white_24dp"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             app:iconGravity="textStart"
-            android:text="cash out"/>
+            android:text="receive payments"/>
 
     </RelativeLayout>
 

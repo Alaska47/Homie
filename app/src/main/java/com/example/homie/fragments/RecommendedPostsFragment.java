@@ -64,6 +64,13 @@ public class RecommendedPostsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        storyCards = new ArrayList<>();
+        initializeData();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {

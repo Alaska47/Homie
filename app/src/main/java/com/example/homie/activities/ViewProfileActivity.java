@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.example.homie.R;
 
 import com.example.homie.utils.BackendUtils;
+import com.example.homie.utils.DataStorage;
 import com.example.homie.utils.StoryCard;
 import com.example.homie.utils.UpdateCard;
 import com.example.homie.utils.UpdatesTimelineAdapter;
@@ -64,6 +66,8 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.content.ContentValues.TAG;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
@@ -137,8 +141,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-
-
         // extract user_id from intent
         String newString;
         if (savedInstanceState == null) {
@@ -173,8 +175,8 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                     String encodedImage = object.getString("picture");
                     byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-                    //bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic);
+                    bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_cardview_pic);
 
                     profileIcon.setImageBitmap(bitmap);
 
@@ -216,13 +218,46 @@ public class ViewProfileActivity extends AppCompatActivity {
                 Log.d("Error: ", String.valueOf(error.networkResponse.statusCode));
             }
         }, this, this);
+
+        final Context context = getApplicationContext();
+        final Activity activity = this;
+
+        BackendUtils.doGetRequest("/api/getUpdateForUser", new HashMap<String, String>() {{
+            put("username", username);
+        }}, new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    updateModelList = new ArrayList<>();
+                    for(int i = 0; i < jArray.length(); i++) {
+                        JSONObject object = jArray.getJSONObject(i);
+                        String timestamp = object.getString("time");
+                        String title = object.getString("title");
+                        String description = object.getString("updateDescription");
+                        updateModelList.add(new UpdateCard(username, timestamp, title, description));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                initializeAdapter();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+            }
+        }, context, activity);
+
         // get data
         // decode bitmap from base64
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         im = (ImageView) findViewById(R.id.expandedImage);
         moneyRaisedDescription = (TextView) findViewById(R.id.raised_money_description);
-       moneyRaisedProgress = (ProgressBar) findViewById(R.id.raised_money_progress);
+        moneyRaisedProgress = (ProgressBar) findViewById(R.id.raised_money_progress);
         amount = (EditText) findViewById(R.id.amount);
         donateButton = (MaterialButton) findViewById(R.id.donate_button);
         donateButton.setOnClickListener(new View.OnClickListener() {
@@ -245,22 +280,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setNestedScrollingEnabled(false);
-
-        updateModelList = new ArrayList<>();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
-        for(int i = updates.length - 1; i >= 0; i--) {
-            Calendar a = Calendar.getInstance();
-            // sample
-            a.set(Calendar.MONTH, i);
-            Date c = a.getTime();
-            updateModelList.add(new UpdateCard(dateFormat.format(c), updates[i][0], updates[i][1]));
-        }
-        initializeAdapter();
     }
 
     private void initializeAdapter() {
-        updatesTimelineAdapter = new UpdatesTimelineAdapter(updateModelList, this);
+        updatesTimelineAdapter = new UpdatesTimelineAdapter(updateModelList, this, this);
         recyclerView.setAdapter(updatesTimelineAdapter);
     }
 
@@ -314,6 +337,20 @@ public class ViewProfileActivity extends AppCompatActivity {
         if (id == R.id.action_heart) {
             if(selectedHeart == false) {
                 menu.getItem(0).setIcon(filledHeart);
+                BackendUtils.doGetRequest("/api/like", new HashMap<String, String>() {{
+                    put("username", username);
+                }}, new VolleyCallback() {
+                            @Override
+                            public void onSuccess(String result) {
+                                Log.d(TAG, result);
+                            }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Log.d(TAG, String.valueOf(error.networkResponse.statusCode));
+                    }
+                }, getApplicationContext(), this);
+
                 Toast.makeText(this, "Liked!", Toast.LENGTH_SHORT).show();
                 selectedHeart = true;
             } else {
