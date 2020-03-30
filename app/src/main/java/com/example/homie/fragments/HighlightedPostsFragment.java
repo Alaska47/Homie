@@ -108,7 +108,7 @@ public class HighlightedPostsFragment extends Fragment {
     }
 
     private void initializeData() {
-        String defaultDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et nemo nimium beatus est; Dulce amarum, leve asperum, prope longe, stare movere, quadratum rotundum.";
+        String defaultDescription = getResources().getString(R.string.default_cv_description);
         storyCards.add(new StoryCard("kash",BitmapFactory.decodeResource(getResources(), R.drawable.stream_img), "Kash", defaultDescription, 10000, 12000, 45, 32));
         storyCards.add(new StoryCard("kash",BitmapFactory.decodeResource(getResources(), R.drawable.hi), "Jonathan", defaultDescription, 412, 1000, 12, 3233));
         storyCards.add(new StoryCard("kash",BitmapFactory.decodeResource(getResources(), R.drawable.olga), "Lizzy", defaultDescription, 2123, 8000, 4500, 0));
